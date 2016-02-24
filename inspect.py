@@ -1,6 +1,7 @@
 class MyClass(object):
     a = '12'
     b = '34'
+    
     def myfunc(self):
         return self.a
 
