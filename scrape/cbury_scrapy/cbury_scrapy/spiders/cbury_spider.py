@@ -1,6 +1,6 @@
 import scrapy
 
-from cbury_scrapy.items import CburyItem
+from cbury_scrapy.items import DA
 
 class CburySpider(scrapy.Spider):
     name = "cbury"
@@ -18,7 +18,7 @@ class CburySpider(scrapy.Spider):
         # get number of records
         num_records = int(response.xpath('//span[@class="datrack_count"]//text()').extract()[0].split()[-1])
 
-        while i < 60:
+        while i < 10:
             url = "http://datrack.canterbury.nsw.gov.au/cgi/datrack.pl?search=search&startidx=" + str(i)
             i += 10
             yield scrapy.Request(url, callback=self.parse_da_list)
@@ -38,12 +38,23 @@ class CburySpider(scrapy.Spider):
 
 
     def parse_da_item(self, response):
-        da = DA_Item()
+        # parsing DA item happens here
+        da = DA()
        
-        item['da_no'] = response.xpath("//*[contains(text(), 'Application No:')]/following-sibling::td/text()").extract()
-        item['date_lodged'] = response.xpath("//*[contains(text(), 'Date Lodged:')]/following-sibling::td/text()").extract()
-        item['desc'] = response.xpath("//*[contains(text(), 'Description:')]/following-sibling::td/text()").extract()
-        item['est_cost'] = response.xpath("//*[contains(text(), 'Estimated Cost:')]/following-sibling::td/text()").extract()
-        item['status'] = response.xpath("//*[contains(text(), 'Status:')]/following-sibling::td/text()").extract()
+        da['da_no'] = response.xpath("//*[contains(text(), 'Application No:')]/following-sibling::td/text()").extract()
+        da['lga'] = u"Canterbury Council"
+        # TODO URL, get from response.url?
+        # da['da_url'] = response.xpath("//*[contains(text(), 'Application No:')]/following-sibling::td/text()").extract()
         
-        yield item
+        # TODO clean this up, method for next sibling
+        da['date_lodged'] = response.xpath("//*[contains(text(), 'Date Lodged:')]/following-sibling::td/text()").extract()
+        
+        da['desc_full'] = response.xpath("//*[contains(text(), 'Description:')]/following-sibling::td/text()").extract()
+        da['est_cost'] = response.xpath("//*[contains(text(), 'Estimated Cost:')]/following-sibling::td/text()").extract()
+        da['status'] = response.xpath("//*[contains(text(), 'Status:')]/following-sibling::td/text()").extract()
+
+        da['date_determined'] = response.xpath("//*[contains(text(), 'Date Determined:')]/following-sibling::td/text()").extract()        
+        da['decision'] = response.xpath("//*[contains(text(), 'Decision:')]/following-sibling::td/text()").extract()
+        
+        #da['date_scr_modified'] = response.xpath("//*[contains(text(), 'Decision:')]/following-sibling::td/text()").extract()
+        yield da
