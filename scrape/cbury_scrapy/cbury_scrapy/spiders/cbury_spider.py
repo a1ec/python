@@ -2,6 +2,16 @@ import scrapy
 
 from cbury_scrapy.items import DA
 
+# retrieves text in td after that containing label
+def td_text_after(label, response):
+    return response.xpath("//*[contains(text(), '" + label + "')]/following-sibling::td//text()").extract()
+
+class scr_session:
+    def __init__(self):
+        # date_started = time.now()
+        # entries returned
+        pass
+
 class CburySpider(scrapy.Spider):
     name = "cbury"
     allowed_domains = ["datrack.canterbury.nsw.gov.au"]
@@ -36,25 +46,24 @@ class CburySpider(scrapy.Spider):
             url = href.extract()
             yield scrapy.Request(url, callback=self.parse_da_item)
 
-
     def parse_da_item(self, response):
         # parsing DA item happens here
-        da = DA()
-       
-        da['da_no'] = response.xpath("//*[contains(text(), 'Application No:')]/following-sibling::td/text()").extract()
-        da['lga'] = u"Canterbury Council"
-        # TODO URL, get from response.url?
-        # da['da_url'] = response.xpath("//*[contains(text(), 'Application No:')]/following-sibling::td/text()").extract()
-        
-        # TODO clean this up, method for next sibling
-        da['date_lodged'] = response.xpath("//*[contains(text(), 'Date Lodged:')]/following-sibling::td/text()").extract()
-        
-        da['desc_full'] = response.xpath("//*[contains(text(), 'Description:')]/following-sibling::td/text()").extract()
-        da['est_cost'] = response.xpath("//*[contains(text(), 'Estimated Cost:')]/following-sibling::td/text()").extract()
-        da['status'] = response.xpath("//*[contains(text(), 'Status:')]/following-sibling::td/text()").extract()
+        da = DA()        
+        labels_d = { 'da_no': 'Application No:', 'date_lodged': 'Date Lodged:',
+                     'desc_full': 'Description:', 'est_cost': 'Estimated Cost:',
+                     'status': 'Status:', 'date_determined': 'Date Determined:', 
+                     'decision': 'Decision:'}
 
-        da['date_determined'] = response.xpath("//*[contains(text(), 'Date Determined:')]/following-sibling::td/text()").extract()        
-        da['decision'] = response.xpath("//*[contains(text(), 'Decision:')]/following-sibling::td/text()").extract()
+        # map our da fields with those in the td elements from the page
+        for i in labels_d:
+            da[i] = td_text_after(labels_d[i], response)
+
+        da['lga'] = u"Canterbury Council"
+        da['url'] = response.url
         
-        #da['date_scr_modified'] = response.xpath("//*[contains(text(), 'Decision:')]/following-sibling::td/text()").extract()
+        # TODO get people
+        p = Person()
+        p['name_no'] = ""
+        p['full_name'] = ""
+        
         yield da
