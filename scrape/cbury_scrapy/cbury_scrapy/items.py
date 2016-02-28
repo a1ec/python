@@ -8,15 +8,6 @@
 import scrapy
 
 class DA(scrapy.Item):
-# Application No:	CDC-12/2015
-# Description:	Proposed internal fit out and additional use of grocery shop to include a butcher
-# Type:	Complying Development (Council)
-# Date Lodged:	06/07/2015
-# Date Determined:	25/08/2015
-# Responsible Officer:	Nazim Bhuiyan
-# Estimated Cost:	$15,000
-# Status:	Approved
-# Decision:	Approved
     da_no = scrapy.Field()
     lga = scrapy.Field()
     url = scrapy.Field()
@@ -30,16 +21,24 @@ class DA(scrapy.Item):
     est_cost = scrapy.Field()
     status = scrapy.Field()
     
+    names = scrapy.Field()
+    officer = scrapy.Field()
     date_determined = scrapy.Field()
     decision = scrapy.Field()
+    
     date_scr_created = scrapy.Field()
     date_scr_modified = scrapy.Field()
     
-    def address():
+    # TODO
+    def street_address_str():
         pass # return full string of address, like "17 Troy Street, CAMPSIE"
-    # TODO people list: name_no and roles
     # TODO properties list: property_no
-    
+
+class DA_Person(scrapy.Item):
+    name_no = scrapy.Field()
+    full_name = scrapy.Field()
+    role = scrapy.Field()
+
 class Person(scrapy.Item):
     name_no = scrapy.Field()
     full_name = scrapy.Field()
