@@ -29,9 +29,6 @@ class DA(scrapy.Item):
     date_scr_created = scrapy.Field()
     date_scr_modified = scrapy.Field()
     
-    # TODO
-    def street_address_str():
-        pass # return full string of address, like "17 Troy Street, CAMPSIE"
     # TODO properties list: property_no
 
 class DA_Person(scrapy.Item):
