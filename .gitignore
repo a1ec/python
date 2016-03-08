@@ -1,0 +1,7 @@
+# Ignore any file in this directory except for this file and *.py files
+!/.gitignore
+
+# Ignore gedit backups
+**/*~
+# Ignore pyc
+**/*.pyc
