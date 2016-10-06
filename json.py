@@ -12,13 +12,16 @@ class JSONObject:
 
 def json_to_obj(t):
     return json.loads(t, object_hook=JSONObject)
-
+    
 data = json_to_obj(s)
 data.name
 data.shares
 data.price
 
+
+"""
 def ordered_dict_example():
     from collections import OrderedDict
     data = json.loads(s, object_pairs_hook=OrderedDict)
     data
+"""
